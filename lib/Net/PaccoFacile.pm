@@ -1,4 +1,4 @@
-package Net::FattureInCloud {
+package Net::PaccoFacile {
     use Moo;
     use Mojo::UserAgent;
     use Carp qw/croak confess/;
@@ -10,7 +10,9 @@ package Net::FattureInCloud {
 
     our $VERSION = qv("v0.2.3");
 
-    has endpoint_uri => ( is => 'ro', default => sub { 'https://api-v2.fattureincloud.it/' } );
+    has endpoint_uri_sandbox => ( is => 'ro', default => sub { 'https://paccofacile.tecnosogima.cloud/sandbox' } );
+    has endpoint_uri_live => ( is => 'ro', default => sub { 'https://paccofacile.tecnosogima.cloud/live' } );
+    has mode => ( is => 'ro' );
     has token => ( is => 'ro' );
     has company_id => ( is => 'ro' );
     has ua => ( is => 'ro', lazy => 1, default => sub { Mojo::UserAgent->new() } );
@@ -18,8 +20,10 @@ package Net::FattureInCloud {
     sub BUILD {
         my ($self, $args) = @_;
 
-        croak 'Please provide token' if !exists $args->{token};
-        croak 'Please provide company_id' if !exists $args->{company_id};
+	#croak 'Please provide token' if !exists $args->{token};
+	#croak 'Please provide token' if !exists $args->{token};
+        croak 'Please provide mode (sandbox or live)'
+	    if $args->{mode} ne 'sandbox' && $args->{mode} ne 'live';
     }
 
     sub request($self, $path, $method, $args = {}) {
@@ -72,11 +76,11 @@ package Net::FattureInCloud {
 
 =head1 NAME
 
-Net::FattureInCloud - Perl library with MINIMAL interface to use FattureInCloud (FIC) API version 2.
+Net::PaccoFacile - Perl library with MINIMAL interface to use PaccoFacile API.
 
 =head1 SYNOPSIS
 
-    use Net::FattureInCloud;
+    use Net::PaccoFacile;
 
     # TODO
 
